@@ -48,4 +48,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorObject, HttpStatus.CONFLICT);
     }
 
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorObject> handleResourceNotFoundException(ResourceNotFoundException ex, WebRequest request) {
+        ErrorObject errorObject = new ErrorObject();
+
+        errorObject.setTimestamp(new Date());
+        errorObject.setMessage(ex.getMessage());
+        errorObject.setStatusCode(HttpStatus.NOT_FOUND.value());
+
+        return new ResponseEntity<>(errorObject, HttpStatus.NOT_FOUND);
+    }
 }

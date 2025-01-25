@@ -1,14 +1,12 @@
 package com.klymenko.newmarketapi.service;
 
-import com.klymenko.newmarketapi.dto.LoginDTO;
-import com.klymenko.newmarketapi.dto.UserDTO;
+import com.klymenko.newmarketapi.dto.user.LoginDTO;
+import com.klymenko.newmarketapi.dto.user.UserDTO;
 import com.klymenko.newmarketapi.entities.User;
 import com.klymenko.newmarketapi.exceptions.ItemAlreadyExistsException;
 import com.klymenko.newmarketapi.mappers.UserMapper;
 import com.klymenko.newmarketapi.repository.UserRepository;
 import com.klymenko.newmarketapi.security.JwtUtil;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;

@@ -1,7 +1,9 @@
 package com.klymenko.newmarketapi.service;
 
-import com.klymenko.newmarketapi.dto.ProductDTO;
+import com.klymenko.newmarketapi.dto.product.ProductDTO;
+import com.klymenko.newmarketapi.dto.product.ProductUpdateDTO;
 import com.klymenko.newmarketapi.entities.Product;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,4 +17,6 @@ public interface ProductService {
     Product getProductById(String productId);
 
     void deleteProduct(String productId);
+
+    Product updateProduct(@Valid ProductUpdateDTO productUpdateDTO, String productId);
 }

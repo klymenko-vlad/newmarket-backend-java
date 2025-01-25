@@ -1,6 +1,7 @@
 package com.klymenko.newmarketapi.service;
 
-import com.klymenko.newmarketapi.dto.ProductDTO;
+import com.klymenko.newmarketapi.dto.product.ProductDTO;
+import com.klymenko.newmarketapi.dto.product.ProductUpdateDTO;
 import com.klymenko.newmarketapi.entities.Product;
 import com.klymenko.newmarketapi.mappers.ProductMapper;
 import com.klymenko.newmarketapi.repository.ProductRepository;
@@ -41,5 +42,41 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(String productId) {
         productRepository.deleteProduct(productId);
+    }
+
+    @Override
+    public Product updateProduct(ProductUpdateDTO productUpdateDTO, String productId) {
+        Product newProduct = getProductById(productId);
+
+        if (productUpdateDTO.getDescription() != null && !productUpdateDTO.getDescription().equals(newProduct.getDescription())) {
+            newProduct.setDescription(productUpdateDTO.getDescription());
+        }
+        if (productUpdateDTO.getPrice() != null && !productUpdateDTO.getPrice().equals(newProduct.getPrice())) {
+            newProduct.setPrice(productUpdateDTO.getPrice());
+        }
+        if (productUpdateDTO.getCategory() != null && !productUpdateDTO.getCategory().equals(newProduct.getCategory())) {
+            newProduct.setCategory(productUpdateDTO.getCategory());
+        }
+        if (productUpdateDTO.getQuantity() != null && !productUpdateDTO.getQuantity().equals(newProduct.getQuantity())) {
+            newProduct.setQuantity(productUpdateDTO.getQuantity());
+        }
+        if (productUpdateDTO.getRating() != null && !productUpdateDTO.getRating().equals(newProduct.getRating())) {
+            newProduct.setRating(productUpdateDTO.getRating());
+        }
+        if (productUpdateDTO.getMainPictureUrl() != null && !productUpdateDTO.getMainPictureUrl().equals(newProduct.getMainPictureUrl())) {
+            newProduct.setMainPictureUrl(productUpdateDTO.getMainPictureUrl());
+        }
+        if (productUpdateDTO.getPastPrice() != null && !productUpdateDTO.getPastPrice().equals(newProduct.getPastPrice())) {
+            newProduct.setPastPrice(productUpdateDTO.getPastPrice());
+        }
+        if (productUpdateDTO.getTitle() != null && !productUpdateDTO.getTitle().equals(newProduct.getTitle())) {
+            newProduct.setTitle(productUpdateDTO.getTitle());
+        }
+        if (productUpdateDTO.getPicturesUrl() != null && !productUpdateDTO.getPicturesUrl().equals(newProduct.getPicturesUrl())) {
+            newProduct.setPicturesUrl(productUpdateDTO.getPicturesUrl());
+        }
+
+
+        return productRepository.updateProduct(newProduct);
     }
 }

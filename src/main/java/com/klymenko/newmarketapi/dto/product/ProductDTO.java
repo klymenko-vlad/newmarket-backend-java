@@ -1,4 +1,4 @@
-package com.klymenko.newmarketapi.dto;
+package com.klymenko.newmarketapi.dto.product;
 
 import com.klymenko.newmarketapi.enums.Categories;
 import jakarta.persistence.*;
@@ -8,7 +8,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.format.annotation.NumberFormat;
 
 import java.math.BigDecimal;
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.klymenko.newmarketapi.mappers;
 
-import com.klymenko.newmarketapi.dto.UserDTO;
+import com.klymenko.newmarketapi.dto.user.UserDTO;
 import com.klymenko.newmarketapi.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
