@@ -3,6 +3,7 @@ package com.klymenko.newmarketapi.exceptions;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -57,5 +58,27 @@ public class GlobalExceptionHandler {
         errorObject.setStatusCode(HttpStatus.NOT_FOUND.value());
 
         return new ResponseEntity<>(errorObject, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ErrorObject> handleBadRequestException(BadRequestException ex, WebRequest request) {
+        ErrorObject errorObject = new ErrorObject();
+
+        errorObject.setTimestamp(new Date());
+        errorObject.setMessage(ex.getMessage());
+        errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
+
+        return new ResponseEntity<>(errorObject, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorObject> handleBadCredentialsException(BadCredentialsException ex, WebRequest request) {
+        ErrorObject errorObject = new ErrorObject();
+
+        errorObject.setTimestamp(new Date());
+        errorObject.setMessage(ex.getMessage());
+        errorObject.setStatusCode(HttpStatus.UNAUTHORIZED.value());
+
+        return new ResponseEntity<>(errorObject, HttpStatus.UNAUTHORIZED);
     }
 }

@@ -1,6 +1,7 @@
 package com.klymenko.newmarketapi.repository;
 
 import com.klymenko.newmarketapi.entities.User;
+import com.klymenko.newmarketapi.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
@@ -18,13 +19,9 @@ public class UserRepository {
     }
 
     public Optional<User> findByEmail(String email) {
-        Optional<User> optionalUser = Optional.ofNullable(entityManager.createQuery("from User where email = :email", User.class)
+        return Optional.ofNullable(entityManager.createQuery("from User where email = :email", User.class)
                 .setParameter("email", email)
                 .getSingleResult());
-
-        System.out.println(optionalUser);
-
-        return optionalUser;
     }
 
     public Boolean existsByEmail(String email) {
@@ -34,7 +31,8 @@ public class UserRepository {
     }
 
     public User getUser(Long id) {
-        return entityManager.find(User.class, id);
+        return Optional.ofNullable(entityManager.find(User.class, id))
+                .orElseThrow(() -> new ResourceNotFoundException("User with id %s isn't found".formatted(id)));
     }
 
     @Transactional
@@ -42,5 +40,22 @@ public class UserRepository {
         entityManager.persist(user);
 
         return getUser(user.getId());
+    }
+
+    @Transactional
+    public void updatePasswords(User user) {
+        entityManager.merge(user);
+    }
+
+    @Transactional
+    public User updateUser(User user) {
+        entityManager.merge(user);
+
+        return getUser(user.getId());
+    }
+
+    @Transactional
+    public void delete(User user) {
+        entityManager.remove(user);
     }
 }

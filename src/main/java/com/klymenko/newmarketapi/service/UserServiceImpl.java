@@ -1,17 +1,21 @@
 package com.klymenko.newmarketapi.service;
 
-import com.klymenko.newmarketapi.dto.user.LoginDTO;
-import com.klymenko.newmarketapi.dto.user.UserDTO;
+import com.klymenko.newmarketapi.dto.user.*;
 import com.klymenko.newmarketapi.entities.User;
+import com.klymenko.newmarketapi.exceptions.BadRequestException;
 import com.klymenko.newmarketapi.exceptions.ItemAlreadyExistsException;
 import com.klymenko.newmarketapi.mappers.UserMapper;
 import com.klymenko.newmarketapi.repository.UserRepository;
 import com.klymenko.newmarketapi.security.JwtUtil;
+import jakarta.persistence.NoResultException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -56,5 +60,77 @@ public class UserServiceImpl implements UserService {
 
         UserDetails userDetails = (UserDetails) authenticate.getPrincipal();
         return jwtUtils.generateToken(userDetails.getUsername());
+    }
+
+    @Override
+    public User getUserById(Long userId) {
+        return userRepository.getUser(userId);
+    }
+
+    @Override
+    public void updatePassword(PasswordUpdateDTO passwordUpdateDTO) {
+        User user = getLoggedInUser();
+
+        if (bCryptPasswordEncoder.matches(passwordUpdateDTO.getNewPassword(), user.getPassword())) {
+            throw new BadRequestException("The passwords are the same");
+        }
+
+        user.setPassword(bCryptPasswordEncoder.encode(passwordUpdateDTO.getNewPassword()));
+
+        userRepository.updatePasswords(user);
+    }
+
+
+    @Override
+    public User getLoggedInUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String email = authentication.getName();
+
+        return userRepository.findByEmail(email)
+                .orElseThrow(() ->
+                        new UsernameNotFoundException("User is not found for the email " + email)
+                );
+    }
+
+    @Override
+    public User updateUser(UserUpdateDTO userUpdateDTO) {
+        User user = getLoggedInUser();
+
+        try {
+            if (userUpdateDTO.getEmail() != null) {
+                boolean emailExists = userRepository.findByEmail(userUpdateDTO.getEmail()).isPresent();
+                if (!emailExists) {
+                    user.setEmail(userUpdateDTO.getEmail());
+                } else {
+                    throw new ItemAlreadyExistsException("Email %s is already taken".formatted(userUpdateDTO.getEmail()));
+                }
+            }
+
+        } catch (EmptyResultDataAccessException e) {
+            user.setEmail(userUpdateDTO.getEmail());
+        }
+
+        if (userUpdateDTO.getPictureUrl() != null) {
+            user.setPictureUrl(userUpdateDTO.getPictureUrl());
+        }
+        if (userUpdateDTO.getName() != null) {
+            user.setName(userUpdateDTO.getName());
+        }
+
+        System.out.println("no error");
+
+        return userRepository.updateUser(user);
+    }
+
+    @Override
+    public void deleteUser(UserDeleteDTO userDeleteDTO) {
+        User user = getLoggedInUser();
+
+        if (!bCryptPasswordEncoder.matches(userDeleteDTO.getPassword(), user.getPassword())) {
+            throw new BadCredentialsException("Provide a right password");
+        }
+
+        userRepository.delete(user);
     }
 }

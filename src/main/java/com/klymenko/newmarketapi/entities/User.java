@@ -1,5 +1,6 @@
 package com.klymenko.newmarketapi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.klymenko.newmarketapi.enums.Roles;
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,6 +28,7 @@ public class User {
     @Column(unique = true)
     private String email;
 
+    @JsonIgnore
     private String password;
 
     private String pictureUrl;
