@@ -1,9 +1,12 @@
 package com.klymenko.newmarketapi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.klymenko.newmarketapi.enums.Categories;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.proxy.HibernateProxy;
 
@@ -42,6 +45,12 @@ public class Product {
     private Categories category;
 
     private Integer rating;
+
+//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+//    @JoinColumn(name = "user_id", nullable = false)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
+//    @JsonIgnore
+//    private User user;
 
     @Column(name = "created_at", nullable = false, updatable = false )
     @CreationTimestamp
