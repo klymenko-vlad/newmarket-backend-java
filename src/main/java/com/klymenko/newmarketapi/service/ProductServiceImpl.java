@@ -14,17 +14,19 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final UserServiceImpl userService;
 
-    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper) {
+    public ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper, UserServiceImpl userService) {
         this.productRepository = productRepository;
         this.productMapper = productMapper;
+        this.userService = userService;
     }
 
     @Override
     public Product createProduct(ProductDTO productDTO) {
         System.out.println(productDTO);
         Product product = productMapper.mapToProductEntity(productDTO);
-        System.out.println(product);
+        product.setUser(userService.getLoggedInUser());
 
         return productRepository.saveProduct(product);
     }

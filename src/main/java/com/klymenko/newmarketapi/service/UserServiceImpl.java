@@ -7,7 +7,6 @@ import com.klymenko.newmarketapi.exceptions.ItemAlreadyExistsException;
 import com.klymenko.newmarketapi.mappers.UserMapper;
 import com.klymenko.newmarketapi.repository.UserRepository;
 import com.klymenko.newmarketapi.security.JwtUtil;
-import jakarta.persistence.NoResultException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -41,10 +40,6 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.mapToUserEntity(userDTO);
 
         user.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
-
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new ItemAlreadyExistsException("User is already exist with email %s".formatted(user.getEmail()));
-        }
 
         return userRepository.save(user);
     }

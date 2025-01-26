@@ -8,7 +8,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.proxy.HibernateProxy;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -31,11 +30,14 @@ public class Product {
 
     private BigDecimal price;
 
+    @Column(name = "past_price")
     private BigDecimal pastPrice;
 
+    @Column(name = "main_picture_url")
     private String mainPictureUrl;
 
     @ElementCollection
+    @Column(name = "pictures_url")
     private List<String> picturesUrl;
 
     private String description;
@@ -46,13 +48,14 @@ public class Product {
 
     private Integer rating;
 
-//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-//    @JoinColumn(name = "user_id", nullable = false)
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-//    @JsonIgnore
-//    private User user;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
+    @ToString.Exclude
+    private User user;
 
-    @Column(name = "created_at", nullable = false, updatable = false )
+    @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
     private Date createdAt;
 
@@ -61,18 +64,14 @@ public class Product {
     private Date updatedAt;
 
     @Override
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null) return false;
-        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
-        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
-        if (thisEffectiveClass != oEffectiveClass) return false;
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return getId() != null && Objects.equals(getId(), product.getId());
+        return Objects.equals(id, product.id) && Objects.equals(title, product.title) && Objects.equals(price, product.price) && Objects.equals(pastPrice, product.pastPrice) && Objects.equals(mainPictureUrl, product.mainPictureUrl) && Objects.equals(picturesUrl, product.picturesUrl) && Objects.equals(description, product.description) && Objects.equals(quantity, product.quantity) && category == product.category && Objects.equals(rating, product.rating) && Objects.equals(user, product.user) && Objects.equals(createdAt, product.createdAt) && Objects.equals(updatedAt, product.updatedAt);
     }
 
     @Override
-    public final int hashCode() {
-        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+    public int hashCode() {
+        return Objects.hash(id, title, price, pastPrice, mainPictureUrl, picturesUrl, description, quantity, category, rating, user, createdAt, updatedAt);
     }
 }

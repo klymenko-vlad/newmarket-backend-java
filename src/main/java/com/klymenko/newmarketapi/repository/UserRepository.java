@@ -1,6 +1,7 @@
 package com.klymenko.newmarketapi.repository;
 
 import com.klymenko.newmarketapi.entities.User;
+import com.klymenko.newmarketapi.exceptions.ItemAlreadyExistsException;
 import com.klymenko.newmarketapi.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -37,6 +38,10 @@ public class UserRepository {
 
     @Transactional
     public User save(User user) {
+        if (existsByEmail(user.getEmail())) {
+            throw new ItemAlreadyExistsException("User is already exist with email %s".formatted(user.getEmail()));
+        }
+
         entityManager.persist(user);
 
         return getUser(user.getId());
