@@ -32,8 +32,7 @@ build/
 ### VS Code ###
 .vscode/
 
-application.properties
-
+.env
 *#
 *.jar
 *.sw?
@@ -44,7 +43,6 @@ application.properties
 .metadata
 .recommenders
 /code
-MANIFEST.MF
 _site/
 activemq-data
 bin
@@ -53,7 +51,6 @@ dependency-reduced-pom.xml
 dump.rdb
 interpolated*.xml
 lib/
-manifest.yml
 out
 overridedb.*
 .flattened-pom.xml
