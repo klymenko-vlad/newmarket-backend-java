@@ -19,10 +19,10 @@ public class UserRepository {
         this.entityManager = entityManager;
     }
 
-    public Optional<User> findByEmail(String email) {
+    public User findByEmail(String email) {
         return Optional.ofNullable(entityManager.createQuery("from User where email = :email", User.class)
                 .setParameter("email", email)
-                .getSingleResult());
+                .getSingleResult()).orElseThrow(() -> new ResourceNotFoundException("User with email %s isn't found".formatted(email)));
     }
 
     public Boolean existsByEmail(String email) {

@@ -1,9 +1,10 @@
-package com.klymenko.newmarketapi.repository;
+package com.klymenko.newmarketapi.unit.repository;
 
 import com.klymenko.newmarketapi.entities.User;
 import com.klymenko.newmarketapi.enums.Roles;
 import com.klymenko.newmarketapi.exceptions.ItemAlreadyExistsException;
 import com.klymenko.newmarketapi.exceptions.ResourceNotFoundException;
+import com.klymenko.newmarketapi.repository.UserRepository;
 import jakarta.persistence.NoResultException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -91,8 +92,8 @@ public class UserRepositoryTest {
 
         var result = userRepository.findByEmail(email);
 
-        Assertions.assertThat(result).isPresent();
-        Assertions.assertThat(result.get().getEmail()).isEqualTo(email);
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getEmail()).isEqualTo(email);
     }
 
     @Test
