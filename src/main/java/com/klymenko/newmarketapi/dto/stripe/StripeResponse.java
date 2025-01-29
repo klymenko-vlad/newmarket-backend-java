@@ -1,4 +1,4 @@
-package com.klymenko.newmarketapi.dto;
+package com.klymenko.newmarketapi.dto.stripe;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

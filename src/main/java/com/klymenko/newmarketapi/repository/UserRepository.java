@@ -63,4 +63,5 @@ public class UserRepository {
     public void delete(User user) {
         entityManager.remove(user);
     }
+
 }

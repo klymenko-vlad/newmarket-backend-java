@@ -1,4 +1,4 @@
-package com.klymenko.newmarketapi.dto;
+package com.klymenko.newmarketapi.dto.stripe;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 public class ProductRequest {
     private Long amount;
     private Long quantity;
-    private String name;
-    private String currency;
+    private String productId;
 }
