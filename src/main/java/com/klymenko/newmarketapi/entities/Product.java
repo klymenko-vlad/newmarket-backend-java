@@ -18,6 +18,7 @@ import java.util.Objects;
 @Setter
 @ToString
 @Entity
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "tbl_products")

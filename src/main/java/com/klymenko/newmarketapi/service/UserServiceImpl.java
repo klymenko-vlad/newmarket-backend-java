@@ -14,7 +14,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -46,11 +45,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String login(LoginDTO loginDTO) {
-        Authentication authenticate = authenticationManager
-                .authenticate(
-                        new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword())
-                );
-
+        Authentication authenticate;
+        try {
+             authenticate = authenticationManager
+                    .authenticate(
+                            new UsernamePasswordAuthenticationToken(loginDTO.getEmail(), loginDTO.getPassword())
+                    );
+        } catch (Exception e) {
+            throw new BadCredentialsException("Bad credentials");
+        }
+        System.out.println("end");
         SecurityContextHolder.getContext().setAuthentication(authenticate);
 
         UserDetails userDetails = (UserDetails) authenticate.getPrincipal();
@@ -82,10 +86,7 @@ public class UserServiceImpl implements UserService {
 
         String email = authentication.getName();
 
-        return userRepository.findByEmail(email)
-                .orElseThrow(() ->
-                        new UsernameNotFoundException("User is not found for the email " + email)
-                );
+        return userRepository.findByEmail(email);
     }
 
     @Override
@@ -94,7 +95,7 @@ public class UserServiceImpl implements UserService {
 
         try {
             if (userUpdateDTO.getEmail() != null) {
-                boolean emailExists = userRepository.findByEmail(userUpdateDTO.getEmail()).isPresent();
+                boolean emailExists = userRepository.existsByEmail(userUpdateDTO.getEmail());
                 if (!emailExists) {
                     user.setEmail(userUpdateDTO.getEmail());
                 } else {
@@ -127,5 +128,10 @@ public class UserServiceImpl implements UserService {
         }
 
         userRepository.delete(user);
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }
