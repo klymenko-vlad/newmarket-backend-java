@@ -71,7 +71,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
 
-                                .requestMatchers("login", "/register", "/v3/api-docs/**",
+                                .requestMatchers("login", "success", "webhook", "cancel", "/register", "/v3/api-docs/**",
                                         "/swagger-ui/**", "/swagger-ui.html", "/error/**").permitAll()
                                 .anyRequest().authenticated()
                 )

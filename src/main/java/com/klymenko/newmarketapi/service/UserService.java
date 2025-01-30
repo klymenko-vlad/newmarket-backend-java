@@ -18,4 +18,6 @@ public interface UserService {
     User updateUser(@Valid UserUpdateDTO userUpdateDTO);
 
     void deleteUser(UserDeleteDTO userDeleteDTO);
+
+    User getUserByEmail(String email);
 }
