@@ -41,6 +41,7 @@ public class StripeService {
 
         String uriString = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
 
+        User user = userService.getLoggedInUser();
 
         Product product = productService.getProductById(productRequest.getProductId());
 
@@ -76,6 +77,7 @@ public class StripeService {
                 .setShippingAddressCollection(shippingAddressCollection)
                 .setAutomaticTax(automaticTax)
                 .putMetadata("product_id", product.getId())
+                .putMetadata("email", (user.getEmail()))
                 .addAllPaymentMethodType(List.of(SessionCreateParams.PaymentMethodType.CARD, SessionCreateParams.PaymentMethodType.IDEAL, SessionCreateParams.PaymentMethodType.PAYPAL))
                 .build();
 
@@ -96,26 +98,25 @@ public class StripeService {
                 .build();
     }
 
-    public void addPurchase(Session session) {
-        String userEmail = session.getCustomerEmail();
-
-        User user = userService.getUserByEmail(userEmail);
-
-        String productId = session.getMetadata().get("product_id");
-
-        Product product = productService.getProductById(productId);
-
-
-        if (productId == null) {
-            throw new RuntimeException("Product ID not found in Stripe session metadata");
+    public void createPurchase(String productId, String userEmail, BigDecimal amount) {
+        System.out.println("Creating purchase:");
+        System.out.println("Product ID: " + productId);
+        System.out.println("User Email: " + userEmail);
+        System.out.println("Amount: " + amount);
+        try {
+            User user = userService.getUserByEmail(userEmail);
+            Product product = productService.getProductById(productId);
+            Purchase purchase = Purchase.builder()
+                    .amount(amount)
+                    .user(user)
+                    .product(product)
+                    .build();
+            purchaseRepository.save(purchase);
+            System.out.println("Purchase saved successfully");
+        } catch (Exception e) {
+            System.err.println("Error creating purchase: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Failed to create purchase", e);
         }
-
-        Purchase purchase = Purchase.builder()
-                .amount(BigDecimal.valueOf(session.getAmountTotal() / 100.0))
-                .user(user)
-                .product(product)
-                .build();
-
-        purchaseRepository.save(purchase);
     }
 }
