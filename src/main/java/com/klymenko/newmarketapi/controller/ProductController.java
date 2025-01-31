@@ -28,7 +28,6 @@ public class ProductController {
         return productService.getAllProducts();
     }
 
-
     @Cacheable(value = "product", key = "#productId")
     @GetMapping("/{productId}")
     public Product getProductById(@PathVariable String productId) {
