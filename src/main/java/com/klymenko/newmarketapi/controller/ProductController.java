@@ -3,11 +3,10 @@ package com.klymenko.newmarketapi.controller;
 import com.klymenko.newmarketapi.dto.product.ProductDTO;
 import com.klymenko.newmarketapi.dto.product.ProductUpdateDTO;
 import com.klymenko.newmarketapi.entities.Product;
-import com.klymenko.newmarketapi.io.ProductResponse;
-import com.klymenko.newmarketapi.mappers.ProductMapper;
 import com.klymenko.newmarketapi.service.ProductServiceImpl;
 import jakarta.validation.Valid;
-import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -18,27 +17,22 @@ import java.util.List;
 @RequestMapping("/product")
 public class ProductController {
     private final ProductServiceImpl productService;
-    private final ProductMapper productMapper;
 
-    public ProductController(ProductServiceImpl productService, ProductMapper productMapper) {
+    public ProductController(ProductServiceImpl productService) {
         this.productService = productService;
-        this.productMapper = productMapper;
     }
 
     @Cacheable(value = "products")
     @GetMapping
-    public List<ProductResponse> getAllProducts() {
-        return productService.getAllProducts()
-                .stream()
-                .map(productMapper::mapToProductResponse)
-                .toList();
+    public List<Product> getAllProducts() {
+        return productService.getAllProducts();
     }
 
 
-    @Cacheable(value = "productsById", key = "#productId")
+    @Cacheable(value = "product", key = "#productId")
     @GetMapping("/{productId}")
-    public ProductResponse getProductById(@PathVariable String productId) {
-        return productMapper.mapToProductResponse(productService.getProductById(productId));
+    public Product getProductById(@PathVariable String productId) {
+        return productService.getProductById(productId);
     }
 
     @PostMapping
@@ -47,12 +41,14 @@ public class ProductController {
         return productService.createProduct(product);
     }
 
+    @CacheEvict(value = "product", key = "#productId")
     @DeleteMapping("/{productId}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void deleteProduct(@PathVariable String productId) {
         productService.deleteProduct(productId);
     }
 
+    @CachePut(value = "product", key = "#productId")
     @PatchMapping("/{productId}")
     public Product updateProduct(@Valid @RequestBody ProductUpdateDTO productUpdateDTO, @PathVariable String productId) {
         return productService.updateProduct(productUpdateDTO, productId);

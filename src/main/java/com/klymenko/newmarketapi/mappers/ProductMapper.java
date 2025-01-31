@@ -2,7 +2,6 @@ package com.klymenko.newmarketapi.mappers;
 
 import com.klymenko.newmarketapi.dto.product.ProductDTO;
 import com.klymenko.newmarketapi.entities.Product;
-import com.klymenko.newmarketapi.io.ProductResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -12,5 +11,4 @@ public interface ProductMapper {
 
     Product mapToProductEntity(ProductDTO productDTO);
 
-    ProductResponse mapToProductResponse(Product product);
 }

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.klymenko.newmarketapi.io.ProductResponse;
+import com.klymenko.newmarketapi.entities.Product;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -24,6 +24,7 @@ public class RedisConfig {
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
         ObjectMapper objectMapper = new ObjectMapper();
+
         objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         objectMapper.setVisibility(objectMapper.getSerializationConfig().getDefaultVisibilityChecker()
                 .withFieldVisibility(JsonAutoDetect.Visibility.ANY)
@@ -31,26 +32,23 @@ public class RedisConfig {
                 .withSetterVisibility(JsonAutoDetect.Visibility.NONE)
                 .withCreatorVisibility(JsonAutoDetect.Visibility.NONE));
 
-        // Configure serializer for ProductResponse list
         JavaType productListType = objectMapper.getTypeFactory()
-                .constructCollectionType(List.class, ProductResponse.class);
-        Jackson2JsonRedisSerializer<List<ProductResponse>> productsSerializer =
+                .constructCollectionType(List.class, Product.class);
+        Jackson2JsonRedisSerializer<List<Product>> productsSerializer =
                 new Jackson2JsonRedisSerializer<>(productListType);
         productsSerializer.setObjectMapper(objectMapper);
 
-        // Configure serializer for single ProductResponse
-        Jackson2JsonRedisSerializer<ProductResponse> productSerializer =
-                new Jackson2JsonRedisSerializer<>(ProductResponse.class);
+        Jackson2JsonRedisSerializer<Product> productSerializer =
+                new Jackson2JsonRedisSerializer<>(Product.class);
         productSerializer.setObjectMapper(objectMapper);
 
-        // Cache configurations
         Map<String, RedisCacheConfiguration> cacheConfigs = new HashMap<>();
 
         cacheConfigs.put("products", RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofMinutes(5))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(productsSerializer)));
 
-        cacheConfigs.put("productsById", RedisCacheConfiguration.defaultCacheConfig()
+        cacheConfigs.put("product", RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofMinutes(60))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(productSerializer)));
 
