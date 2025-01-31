@@ -3,8 +3,11 @@ package com.klymenko.newmarketapi.controller;
 import com.klymenko.newmarketapi.dto.product.ProductDTO;
 import com.klymenko.newmarketapi.dto.product.ProductUpdateDTO;
 import com.klymenko.newmarketapi.entities.Product;
+import com.klymenko.newmarketapi.io.ProductResponse;
+import com.klymenko.newmarketapi.mappers.ProductMapper;
 import com.klymenko.newmarketapi.service.ProductServiceImpl;
 import jakarta.validation.Valid;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,9 +17,11 @@ import java.util.List;
 @RequestMapping("/product")
 public class ProductController {
     private final ProductServiceImpl productService;
+    private final ProductMapper productMapper;
 
-    public ProductController(ProductServiceImpl productService) {
+    public ProductController(ProductServiceImpl productService, ProductMapper productMapper) {
         this.productService = productService;
+        this.productMapper = productMapper;
     }
 
     @GetMapping
@@ -24,9 +29,10 @@ public class ProductController {
         return productService.getAllProducts();
     }
 
+    @Cacheable(value = "products", key = "#productId")
     @GetMapping("/{productId}")
-    public Product getProductById(@PathVariable String productId) {
-        return productService.getProductById(productId);
+    public ProductResponse getProductById(@PathVariable String productId) {
+        return productMapper.mapToProductResponse(productService.getProductById(productId));
     }
 
     @PostMapping

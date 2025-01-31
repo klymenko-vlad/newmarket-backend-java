@@ -9,6 +9,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,8 @@ import java.util.Objects;
 @NoArgsConstructor
 @Builder
 @Table(name = "tbl_users")
-public class User {
+public class User implements Serializable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -57,13 +59,11 @@ public class User {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(name, user.name) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(pictureUrl, user.pictureUrl) && role == user.role && Objects.equals(createdAt, user.createdAt) && Objects.equals(updatedAt, user.updatedAt);
+        return Objects.equals(id, user.id) && Objects.equals(name, user.name) && Objects.equals(email, user.email) && Objects.equals(password, user.password) && Objects.equals(pictureUrl, user.pictureUrl) && role == user.role && Objects.equals(purchases, user.purchases) && Objects.equals(createdAt, user.createdAt) && Objects.equals(updatedAt, user.updatedAt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, email, password, pictureUrl, role, createdAt, updatedAt);
+        return Objects.hash(id, name, email, password, pictureUrl, role, purchases, createdAt, updatedAt);
     }
-
-
 }

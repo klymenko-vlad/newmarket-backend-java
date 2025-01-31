@@ -5,10 +5,12 @@ import com.klymenko.newmarketapi.dto.product.ProductUpdateDTO;
 import com.klymenko.newmarketapi.entities.Product;
 import com.klymenko.newmarketapi.mappers.ProductMapper;
 import com.klymenko.newmarketapi.repository.ProductRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class ProductServiceImpl implements ProductService {
 

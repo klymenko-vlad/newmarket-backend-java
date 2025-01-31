@@ -5,6 +5,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class PurchaseRepository {
 
@@ -17,5 +19,11 @@ public class PurchaseRepository {
     @Transactional
     public void save(Purchase purchase) {
         entityManager.persist(purchase);
+    }
+
+    public List<Purchase> getAllPurchase(Long userId) {
+        return entityManager
+                .createQuery("from Purchase where user.id = :userId", Purchase.class)
+                .setParameter("userId", userId).getResultList();
     }
 }
