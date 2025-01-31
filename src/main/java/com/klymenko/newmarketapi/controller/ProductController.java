@@ -7,6 +7,7 @@ import com.klymenko.newmarketapi.io.ProductResponse;
 import com.klymenko.newmarketapi.mappers.ProductMapper;
 import com.klymenko.newmarketapi.service.ProductServiceImpl;
 import jakarta.validation.Valid;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -24,12 +25,17 @@ public class ProductController {
         this.productMapper = productMapper;
     }
 
+    @Cacheable(value = "products")
     @GetMapping
-    public List<Product> getAllProducts() {
-        return productService.getAllProducts();
+    public List<ProductResponse> getAllProducts() {
+        return productService.getAllProducts()
+                .stream()
+                .map(productMapper::mapToProductResponse)
+                .toList();
     }
 
-    @Cacheable(value = "products", key = "#productId")
+
+    @Cacheable(value = "productsById", key = "#productId")
     @GetMapping("/{productId}")
     public ProductResponse getProductById(@PathVariable String productId) {
         return productMapper.mapToProductResponse(productService.getProductById(productId));
