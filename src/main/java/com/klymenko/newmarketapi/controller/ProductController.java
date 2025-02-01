@@ -5,6 +5,7 @@ import com.klymenko.newmarketapi.dto.product.ProductUpdateDTO;
 import com.klymenko.newmarketapi.entities.Product;
 import com.klymenko.newmarketapi.service.ProductServiceImpl;
 import jakarta.validation.Valid;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -51,5 +52,10 @@ public class ProductController {
     @PatchMapping("/{productId}")
     public Product updateProduct(@Valid @RequestBody ProductUpdateDTO productUpdateDTO, @PathVariable String productId) {
         return productService.updateProduct(productUpdateDTO, productId);
+    }
+
+    @GetMapping("/search/{keyword}")
+    public List<Product> getProductByKeyword(@Length(min = 2, message = "You have to provide at query with length of at least 2 characters") @PathVariable String keyword) {
+        return productService.getProductByKeyword(keyword);
     }
 }

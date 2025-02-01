@@ -19,4 +19,6 @@ public interface ProductService {
     void deleteProduct(String productId);
 
     Product updateProduct(@Valid ProductUpdateDTO productUpdateDTO, String productId);
+
+    List<Product> getProductByKeyword(String keyword);
 }

@@ -51,4 +51,11 @@ public class ProductRepository {
 
         return getProduct(newProduct.getId());
     }
+
+    public List<Product> getProductByKeyword(String keyword) {
+        return entityManager.createQuery(
+                        "from Product where title ILIKE :keyword or description ILIKE :keyword", Product.class)
+                .setParameter("keyword", "%" + keyword + "%")
+                .getResultList();
+    }
 }

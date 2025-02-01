@@ -49,7 +49,7 @@ public class RedisConfig {
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(productsSerializer)));
 
         cacheConfigs.put("product", RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(60))
+                .entryTtl(Duration.ofMinutes(30))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(productSerializer)));
 
         return RedisCacheManager.builder(redisConnectionFactory)

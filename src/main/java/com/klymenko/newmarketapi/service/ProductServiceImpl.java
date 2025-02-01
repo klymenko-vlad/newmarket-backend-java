@@ -83,4 +83,9 @@ public class ProductServiceImpl implements ProductService {
 
         return productRepository.updateProduct(newProduct);
     }
+
+    @Override
+    public List<Product> getProductByKeyword(String keyword) {
+        return productRepository.getProductByKeyword(keyword);
+    }
 }

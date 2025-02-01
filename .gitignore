@@ -57,3 +57,4 @@ overridedb.*
 secrets.yml
 .git-hooks/
 node_modules
+/src/main/resources/prometheus.yml
