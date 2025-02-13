@@ -1,5 +1,6 @@
 package com.klymenko.newmarketapi.service;
 
+import com.klymenko.newmarketapi.dto.product.GetAllProductsResponse;
 import com.klymenko.newmarketapi.dto.product.ProductDTO;
 import com.klymenko.newmarketapi.dto.product.ProductUpdateDTO;
 import com.klymenko.newmarketapi.entities.Product;
@@ -34,8 +35,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<Product> getAllProducts() {
-        return productRepository.getAllProducts();
+    public GetAllProductsResponse getAllProducts(int pageSize, int pageNumber) {
+
+        return productRepository.getAllProducts(pageSize, pageNumber);
     }
 
     @Override
@@ -82,5 +84,10 @@ public class ProductServiceImpl implements ProductService {
 
 
         return productRepository.updateProduct(newProduct);
+    }
+
+    @Override
+    public List<Product> getProductByKeyword(String keyword) {
+        return productRepository.getProductByKeyword(keyword);
     }
 }
