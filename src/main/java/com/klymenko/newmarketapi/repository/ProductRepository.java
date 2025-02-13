@@ -1,5 +1,7 @@
 package com.klymenko.newmarketapi.repository;
 
+import com.klymenko.newmarketapi.dto.product.GetAllProductsResponse;
+import com.klymenko.newmarketapi.entities.PaginationModel;
 import com.klymenko.newmarketapi.entities.Product;
 import com.klymenko.newmarketapi.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityManager;
@@ -20,8 +22,18 @@ public class ProductRepository {
         this.entityManager = entityManager;
     }
 
-    public List<Product> getAllProducts() {
-        return entityManager.createQuery("from Product", Product.class).getResultList();
+    public GetAllProductsResponse getAllProducts(int pageSize, int pageNumber) {
+        List<Product> products = entityManager.createQuery("from Product", Product.class)
+                .setFirstResult((pageNumber - 1) * pageSize)
+                .setMaxResults(pageSize)
+                .getResultList();
+
+        Long totalResults = entityManager.createQuery("SELECT COUNT(p) FROM Product p", Long.class)
+                .getSingleResult();
+
+        PaginationModel paginationModel = new PaginationModel(pageSize, pageNumber, totalResults, Math.ceilDiv(totalResults, pageSize));
+
+        return new GetAllProductsResponse(products, paginationModel);
     }
 
     public Product getProduct(String productId) {

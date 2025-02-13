@@ -1,5 +1,6 @@
 package com.klymenko.newmarketapi.service;
 
+import com.klymenko.newmarketapi.dto.product.GetAllProductsResponse;
 import com.klymenko.newmarketapi.dto.product.ProductDTO;
 import com.klymenko.newmarketapi.dto.product.ProductUpdateDTO;
 import com.klymenko.newmarketapi.entities.Product;
@@ -12,7 +13,7 @@ import java.util.List;
 public interface ProductService {
     Product createProduct(ProductDTO productDTO);
 
-    List<Product> getAllProducts();
+    GetAllProductsResponse getAllProducts(int pageSize, int pageNumber);
 
     Product getProductById(String productId);
 

@@ -1,5 +1,6 @@
 package com.klymenko.newmarketapi.controller;
 
+import com.klymenko.newmarketapi.dto.product.GetAllProductsResponse;
 import com.klymenko.newmarketapi.dto.product.ProductDTO;
 import com.klymenko.newmarketapi.dto.product.ProductUpdateDTO;
 import com.klymenko.newmarketapi.entities.Product;
@@ -25,8 +26,8 @@ public class ProductController {
 
     @Cacheable(value = "products")
     @GetMapping
-    public List<Product> getAllProducts() {
-        return productService.getAllProducts();
+    public GetAllProductsResponse getAllProducts(@RequestParam("pageSize") int pageSize, @RequestParam("pageNumber") int pageNumber) {
+        return productService.getAllProducts(pageSize, pageNumber);
     }
 
     @Cacheable(value = "product", key = "#productId")

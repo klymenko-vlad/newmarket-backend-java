@@ -1,5 +1,6 @@
-package com.klymenko.newmarketapi.unit.repository;
+package com.klymenko.newmarketapi.integration.repository;
 
+import com.klymenko.newmarketapi.dto.product.GetAllProductsResponse;
 import com.klymenko.newmarketapi.entities.Product;
 import com.klymenko.newmarketapi.entities.User;
 import com.klymenko.newmarketapi.enums.Categories;
@@ -15,12 +16,11 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @Import({ProductRepository.class, UserRepository.class})
-public class ProductRepositoryTest {
+public class ProductRepositoryIntegrationTest {
 
     private User mockUser;
 
@@ -104,11 +104,18 @@ public class ProductRepositoryTest {
     }
 
     @Test
-    public void ProductRepository_GetAllProducts_ReturnsEmptyListWhenNoProducts() {
-        List<Product> products = productRepository.getAllProducts();
+    public void ProductRepository_GetAllProducts_ReturnsEmptyContentListWhereNoProducts() {
+        GetAllProductsResponse allProducts = productRepository.getAllProducts(10, 20);
 
-        Assertions.assertThat(products).isNotNull();
-        Assertions.assertThat(products).isEmpty();
+        Assertions.assertThat(allProducts).isNotNull();
+        Assertions.assertThat(allProducts.getContent()).isNotNull();
+        Assertions.assertThat(allProducts.getContent().size()).isEqualTo(0);
+
+        Assertions.assertThat(allProducts.getPage()).isNotNull();
+        Assertions.assertThat(allProducts.getPage().getSize()).isEqualTo(10);
+        Assertions.assertThat(allProducts.getPage().getNumber()).isEqualTo(20);
+        Assertions.assertThat(allProducts.getPage().getTotalElements()).isEqualTo(0);
+        Assertions.assertThat(allProducts.getPage().getTotalPages()).isEqualTo(0);
     }
 
     @Test
@@ -121,11 +128,11 @@ public class ProductRepositoryTest {
         productRepository.saveProduct(product1);
         productRepository.saveProduct(product2);
 
-        List<Product> products = productRepository.getAllProducts();
+        GetAllProductsResponse products = productRepository.getAllProducts(2, 1);
 
         Assertions.assertThat(products).isNotNull();
-        Assertions.assertThat(products.size()).isEqualTo(2);
-        Assertions.assertThat(products)
+        Assertions.assertThat(products.getContent().size()).isEqualTo(2);
+        Assertions.assertThat(products.getContent())
                 .extracting("title")
                 .containsExactlyInAnyOrder("Product 1", "Product 2");
     }
